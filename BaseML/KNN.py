@@ -3,9 +3,9 @@ from sklearn.model_selection import train_test_split
 import os
 
 
-class KNNClassifier:
+class KNN:
     def __init__(self,
-                 backbone='KNNClassifier',
+                 backbone='KNN',
                  n_neighbors=10,
                  ):
         self.backbone = backbone
