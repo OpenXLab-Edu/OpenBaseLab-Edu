@@ -3,10 +3,8 @@ import os
 
 
 class Perceptron:
-    def __init__(self,
-                 backbone='KNNClassifier',
+    def __init__(self
                  ):
-        self.backbone = backbone
         # 获取外部运行py的绝对路径
         self.cwd = os.path.dirname(os.getcwd())
         # 获取当前文件的绝对路径
