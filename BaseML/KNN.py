@@ -5,10 +5,8 @@ import os
 
 class KNN:
     def __init__(self,
-                 backbone='KNN',
                  n_neighbors=10,
                  ):
-        self.backbone = backbone
         # 获取外部运行py的绝对路径
         self.cwd = os.path.dirname(os.getcwd())
         # 获取当前文件的绝对路径

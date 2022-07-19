@@ -4,52 +4,52 @@ import os
 import numpy as np 
 
 class MMImage:
-    def __init__ (self,method='blur'):
+    def __init__(self, method='blur'):
         self.method = method
         self.img = None
 
-    def process(self,save_path = '',para = []):
+    def process(self, save_path='', para=[]):
         if save_path != '':
             save_path = save_path
         img_out = getattr(self, "_"+self.method)(para)
-        cv2.imwrite(save_path,img_out)
+        cv2.imwrite(save_path, img_out)
 
-    def load_image(self,image_path):
-        img = cv2.imread(image_path,cv2.IMREAD_UNCHANGED)
+    def load_image(self, image_path):
+        img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
         self.img = img
 
-    def _blur(self,para = []):
-        type_method,kernal = para
+    def _blur(self, para=[]):
+        type_method, kernal = para
         img_out = cv2.blur(self.img, (kernal, kernal))  #sum(square)/25
         return img_out
 
     def _contour(self,para=[]):
-        gray_img=cv2.cvtColor(self.img,cv2.COLOR_BGR2GRAY) 
-        dep,img_bin=cv2.threshold(gray_img,128,255,cv2.THRESH_BINARY) 
-        image_,contours=cv2.findContours(img_bin, mode=cv2.RETR_TREE,  method=cv2.CHAIN_APPROX_SIMPLE) 
+        gray_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        dep, img_bin = cv2.threshold(gray_img, 128, 255, cv2.THRESH_BINARY)
+        image_, contours = cv2.findContours(img_bin, mode=cv2.RETR_TREE,  method=cv2.CHAIN_APPROX_SIMPLE)
         to_write = self.img.copy() 
         # cv2.drawContours(img,contours,0,(0,0,255),3)  
         ret = cv2.drawContours(to_write,image_,-1,(0,0,255),3) 
         return ret
     
-    def _hist(self,para=[]):
-        gray_img=cv2.cvtColor(self.img,cv2.COLOR_BGR2GRAY) 
-        img =  gray_img.astype(np.uint8)
+    def _hist(self, para=[]):
+        gray_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        img = gray_img.astype(np.uint8)
         return cv2.equalizeHist(img)
     
-    def _watershed_contour(self,para=[]):
+    def _watershed_contour(self, para=[]):
         gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)  # 转为灰度图像
 
         # 查找和绘制图像轮廓
-        Gauss = cv2.GaussianBlur(gray, (5,5), sigmaX=4.0)
-        grad = cv2.Canny(Gauss,50,150)
+        Gauss = cv2.GaussianBlur(gray, (5, 5), sigmaX=4.0)
+        grad = cv2.Canny(Gauss, 50, 150)
 
         grad, contours = cv2.findContours(grad, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # 查找图像轮廓
         markers = np.zeros(self.img.shape[:2], np.int32)  # 生成标识图像，所有轮廓区域标识为索引号 (index)
         for index in range(len(contours)):  # 用轮廓的索引号 index 标识轮廓区域
             markers = cv2.drawContours(markers, grad, index, (index, index, index), 1, 8, contours)
         ContoursMarkers = np.zeros(self.img.shape[:2], np.uint8)
-        ContoursMarkers[markers>0] = 255  
+        ContoursMarkers[markers > 0] = 255
 
         # 分水岭算法
         markers = cv2.watershed(self.img, markers)  # 所有轮廓的像素点被标注为 -1
@@ -58,7 +58,7 @@ class MMImage:
         bgrMarkers = np.zeros_like(self.img)
         for i in range(len(contours)): 
             colorKind = [np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255)]
-            bgrMarkers[markers==i] = colorKind
+            bgrMarkers[markers == i] = colorKind
         bgrFilled = cv2.addWeighted(self.img, 0.67, bgrMarkers, 0.33, 0) 
         return cv2.cvtColor(bgrFilled, cv2.COLOR_BGR2RGB)
 
@@ -88,7 +88,7 @@ class MMImage:
         for i in range(kinds):
             if (i!=maxKind):
                 colorKind = [np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255)]
-                markersBGR[markers==i] = colorKind
+                markersBGR[markers == i] = colorKind
         # 去除连通域中的背景区域部分
         unknown = cv2.subtract(sure_bg, sure_fg)  # 待定区域，前景与背景的重合区域
         markers[unknown == 255] = 0  # 去掉属于背景的区域 (置零)
@@ -102,9 +102,8 @@ class MMImage:
         # print(self.img.shape, markers.shape, markers.max(), markers.min(), ret)
         return cv2.cvtColor(markersBGR, cv2.COLOR_BGR2RGB)
 
-
     def _canny(self,para=[100,200]):
-        return cv2.Canny(self.img,para[0],para[1])
+        return cv2.Canny(self.img, para[0], para[1])
 
     def _corner(self,para = 0.01):
         gray_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
