@@ -1,4 +1,4 @@
-from sklearn.linear_model import Perceptron
+from sklearn.linear_model import Perceptron as per
 import os
 
 
@@ -11,7 +11,7 @@ class Perceptron:
         self.file_dirname = os.path.dirname(os.path.abspath(__file__))
         self.dataset = ''
         self.x_train, self.x_test = 0, 0
-        self.model = Perceptron()
+        self.model = per()
 
     def train(self):
         self.model.fit(self.dataset)

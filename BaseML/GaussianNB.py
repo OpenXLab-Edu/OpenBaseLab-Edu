@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 from sklearn.metrics import accuracy_score, mean_squared_error
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB as gauss
 
 
 class GaussianNB:
@@ -11,7 +11,7 @@ class GaussianNB:
                  ):
         self.cwd = os.path.dirname(os.getcwd())  # 获取当前文件的绝对路径
         self.file_dirname = os.path.dirname(os.path.abspath(__file__))
-        self.model = GaussianNB()
+        self.model = gauss()
         self.dataset_path = ' '
         self.test_size = ' '
         self.test_set = ' '
