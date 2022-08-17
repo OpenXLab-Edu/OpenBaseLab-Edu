@@ -16,11 +16,7 @@ class LR:
     def train(self, seed=0, data_type='csv'):
         np.random.seed(seed)
         if data_type == 'csv':
-            dataset = pd.read_csv(self.dataset_path,sep=',',header=None).values 
-        elif data_type == 'pandas':
-            dataset = self.load_pd()
-        elif data_type == 'list':
-            dataset = self.load_list()
+            dataset = pd.read_csv(self.dataset_path,sep=',',header=None).values
         np.random.shuffle(dataset)
 
         data, label = dataset[:,:-1],dataset[:,-1]
@@ -40,9 +36,3 @@ class LR:
     def load_dataset(self,path,test_size=0.2):
         self.dataset_path = path 
         self.test_size = test_size
-
-    def load_pd(self):
-        pass
-
-    def load_list(self):
-        pass
