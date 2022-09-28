@@ -8,6 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+import joblib
 
 class cls:
     def __init__(self, algorithm='KNN', n_neighbors=5, n_estimators=100, ):
@@ -75,3 +76,11 @@ class cls:
         self.dataset_path = path
         self.test_size = test_size
         self.dataset=dataset
+
+    def save(self):
+        print("Saving model checkpoints...")
+        joblib.dump(self.model, '../checkpoint.pkl', compress=3)
+        
+    
+    def load(self, path):
+        joblib.load(path)

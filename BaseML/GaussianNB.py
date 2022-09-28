@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import joblib
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.naive_bayes import GaussianNB as gauss
@@ -16,6 +17,7 @@ class GaussianNB:
         self.test_size = ' '
         self.test_set = ' '
 
+
     def train(self, seed=0, data_type='csv'):
         np.random.seed(seed)
         if data_type == 'csv':
@@ -30,6 +32,8 @@ class GaussianNB:
             'label': label[train_index:]
         }
         self.model.fit(train_data, train_label)
+        return self.model
+
 
     def inference(self, mode='cls'):
         pred = self.model.predict(self.test_set['data'])
@@ -40,6 +44,16 @@ class GaussianNB:
             loss = mean_squared_error(self.test_set['label'], pred)
             print('Loss: {}'.format(loss))
 
+
     def load_dataset(self, path, test_size=0.2):
         self.dataset_path = path
         self.test_size = test_size
+
+
+    def save(self):
+        print("Saving model checkpoints...")
+        joblib.dump(self.model, '../checkpoint.pkl', compress=3)
+        
+    
+    def load(self, path):
+        joblib.load(path)
