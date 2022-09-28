@@ -8,10 +8,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score, silhouette_samples
 import joblib
 
 class cls:
-    def __init__(self, algorithm='KNN', n_neighbors=5, n_estimators=100, ):
+    def __init__(self, algorithm='KNN', n_neighbors=5, n_estimators=100, N_CLUSTERS=5):
         self.algorithm = algorithm
         self.cwd = os.path.dirname(os.getcwd())  # 获取当前文件的绝对路径
         self.file_dirname = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +31,9 @@ class cls:
             self.model = DecisionTreeClassifier()
         elif self.algorithm == 'AdaBoost':
             self.model = AdaBoostClassifier(n_estimators=n_estimators, random_state=0)
+        elif self.algorithm == 'Kmeans':
+            self.n = N_CLUSTERS
+            self.model = KMeans(self.n)
 
     def train(self, seed=0, data_type='csv'):
         if self.algorithm == 'AdaBoost' or 'SVM' or 'NaiveBayes':
@@ -57,20 +62,37 @@ class cls:
             self.model.fit(self.x_train, self.y_train)
             acc = self.model.score(self.x_test, self.y_test)
             print('准确率为：{}%'.format(acc * 100))
+        
+        elif self.algorithm == 'Kmeans':
+            self.dataset = pd.read_csv(self.dataset_path)
+            self.x_train = self.dataset.drop('省级行政区', axis=1)
+            self.x_train = self.x_train.drop("城市", axis=1)
+            self.x_np = np.array(self.x_train)
+            self.model.fit(self.x_np)
 
     def inference(self, data):
         if self.algorithm == 'AdaBoost' or 'SVM' or 'NaiveBayes':
             pred = self.model.predict(self.test_set['data'])
             acc = accuracy_score(self.test_set['label'], pred)
             print('准确率为：{}%'.format(acc * 100))
+
         elif self.algorithm == 'KNN':
             result = self.model.predict(data)
             print(result)
             print("分类结果：{}".format(self.dataset['target_names'][result]))
+
         elif self.algorithm == 'CART':
             self.model.fit_transform(data)
             print(self.model.n_features_)
             print(self.model.n_samples_)
+
+        elif self.algorithm == 'Kmeans':
+            labels = self.model.labels_      # 获取聚类标签
+            print(silhouette_score(self.x_np, labels))      # 获取聚类结果总的轮廓系数
+            print(self.model.cluster_centers_)	# 输出类簇中心
+            for i in range(self.n):
+                print(f" CLUSTER-{i+1} ".center(60, '='))
+                print(self.dataset[labels == i])
 
     def load_dataset(self, path, test_size=0.2, dataset=''):
         self.dataset_path = path
