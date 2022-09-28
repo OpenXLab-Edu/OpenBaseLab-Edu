@@ -6,6 +6,7 @@ from sklearn.linear_model import Perceptron as per
 from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
 from sklearn import linear_model
 from sklearn.decomposition import PCA as pca_reduction
+import joblib
 
 class reg:
     def __init__(self, algorithm='', n_components='mle'):
@@ -55,3 +56,12 @@ class reg:
         self.dataset_path = path 
         self.test_size = test_size
         self.dataset = dataset
+
+
+    def save(self):
+        print("Saving model checkpoints...")
+        joblib.dump(self.model, '../checkpoint.pkl', compress=3)
+        
+    
+    def load(self, path):
+        joblib.load(path)
