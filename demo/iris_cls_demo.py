@@ -1,5 +1,4 @@
-import sys
-sys.path.append("/home/PJLAB/liangyiwen/Even/code/OpenBaseLab-Edu")
+
 from BaseML import Classification
 import numpy as np
 from sklearn import datasets
