@@ -49,8 +49,8 @@ class cls:
             self.model.fit(self.x_train, self.y_train)
         
         elif self.algorithm == 'CART':
-            self.model.fit(self.dataset)
-            print(self.model.explained_variance_ratio_)
+            self.model.fit(self.x_train, self.y_train)
+            # print(self.model.explained_variance_ratio_)
             # 返回所保留的n个成分各自的方差百分比,这里可以理解为单个变量方差贡献率。
         
         elif self.algorithm == 'KNN':
@@ -89,17 +89,21 @@ class cls:
                 print(f" CLUSTER-{i+1} ".center(60, '='))
                 print(self.dataset[labels == i])
 
-            if data is not np.nan:
-                pred = self.model.predict(data)
-                return pred
+            pred = self.model.predict(self.x_test)
+            return pred
+
 
     # 从文件加载数据集，支持csv文件和txt文件
     def load_dataset_from_file(self, path, x_column = [], y_column = []):
         if type == 'csv':
             self.dataset = pd.read_csv(path).values # .values就转成numpy格式了
+            X = self.dataset[:,x_column]
+            y = self.dataset[:,y_column]
             self.get_data(X,y,x_column,y_column)
         elif type == 'txt':
             self.dataset = np.loadtxt(path)
+            X = self.dataset[:,x_column]
+            y = self.dataset[:,y_column]
             X = X.values
             y = y.values
             self.get_data(X,y,x_column,y_column)
@@ -127,7 +131,7 @@ class cls:
             raise ValueError("请传入数据列号")
         if type == 'csv':
             self.dataset = pd.read_csv(X).values # .values就转成numpy格式了
-            self.get_data(X,y,x_column,y_column)
+            self.get_data(self.dataset,self.dataset,x_column,y_column)
         elif type == 'numpy':  # 统一转成numpy格式
             self.get_data(X,y,x_column,y_column)
         elif type == 'pandas':
@@ -140,14 +144,14 @@ class cls:
             self.get_data(X,y,x_column,y_column)
         elif type == 'txt':
             self.dataset = np.loadtxt(X)
-            X = X.values
-            y = y.values
-            self.get_data(X,y,x_column,y_column)
+            self.dataset = self.dataset.values
+            self.get_data(self.dataset,self.dataset,x_column,y_column)
         
 
     def save(self,path="checkpoint.pkl"):
         print("Saving model checkpoints...")
         joblib.dump(self.model, path, compress=3)
+        print("Saved successfully!")
         
     
     def load(self, path):

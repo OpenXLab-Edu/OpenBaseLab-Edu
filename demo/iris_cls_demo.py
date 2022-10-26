@@ -1,3 +1,5 @@
+import sys
+sys.path.append("/home/PJLAB/liangyiwen/Even/code/OpenBaseLab-Edu")
 from BaseML import Classification
 import numpy as np
 from sklearn import datasets
@@ -23,4 +25,4 @@ def iris_cls(algorithm = 'MLP'): # path指定模型保存的路径
     model.save()
 
 if __name__ == '__main__':
-    iris_cls(algorithm='MLP')
+    iris_cls(algorithm='Kmeans')
