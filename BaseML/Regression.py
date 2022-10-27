@@ -52,10 +52,66 @@ class reg:
             print(self.model.n_features_)
             print(self.model.n_samples_)
 
-    def load_dataset(self,path,test_size=0.2, dataset=''):
-        self.dataset_path = path 
-        self.test_size = test_size
-        self.dataset = dataset
+   # 从文件加载数据集，支持csv文件和txt文件
+    def load_dataset_from_file(self, path, x_column = [], y_column = []):
+        if type == 'csv':
+            self.dataset = pd.read_csv(path).values # .values就转成numpy格式了
+            self.get_data(X,y,x_column,y_column)
+        elif type == 'txt':
+            self.dataset = np.loadtxt(path)
+            X = X.values
+            y = y.values
+            self.get_data(X,y,x_column,y_column)
+
+    # 从数据加载数据集，支持['numpy','list','DataFrame']
+    def load_dataset_from_data(self, X, y = None, x_column = [], y_column = []):
+        if type(X) != type(y):
+            raise TypeError("数据格式不同，无法加载")
+        if isinstance(X,list):
+            X = np.array(X)
+            y = np.array(y)
+            self.get_data(X,y,x_column,y_column)
+        elif isinstance(X,np.ndarray):
+            self.get_data(X,y,x_column,y_column)
+        elif isinstance(X,pd.DataFrame):
+            X = X.values
+            y = y.values
+            self.get_data(X,y,x_column,y_column)
+
+
+
+    # 支持的type有['csv', 'numpy','pandas','list','txt]，后面一律转为numpy格式
+    def load_dataset(self, X, y = None, type = None, x_column = [], y_column = []):
+        if len(x_column) == 0:
+            raise ValueError("请传入数据列号")
+        if type == 'csv':
+            self.dataset = pd.read_csv(X).values # .values就转成numpy格式了
+            self.get_data(X,y,x_column,y_column)
+        elif type == 'numpy':  # 统一转成numpy格式
+            self.get_data(X,y,x_column,y_column)
+        elif type == 'pandas':
+            X = X.values
+            y = y.values
+            self.get_data(X,y,x_column,y_column)
+        elif type == 'list':
+            X = np.array(X)
+            y = np.array(y)
+            self.get_data(X,y,x_column,y_column)
+        elif type == 'txt':
+            self.dataset = np.loadtxt(X)
+            X = X.values
+            y = y.values
+            self.get_data(X,y,x_column,y_column)
+        
+    def get_data(self,X,y,x_column,y_column):
+        if len(X):
+            self.x_train = X[:,x_column]
+        if len(y):  # 
+            if y.ndim == 1:
+                y = y.reshape(-1,1)
+            self.y_train = y[:,y_column]
+            if self.y_train.shape[0]:
+                self.dataset = np.concatenate((self.x_train,self.y_train),axis=1) # 按列进行拼接
 
 
     def save(self):
