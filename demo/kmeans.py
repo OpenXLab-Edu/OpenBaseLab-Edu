@@ -2,7 +2,7 @@ from BaseML import Classification
 import numpy as np
 
 N_CLUSTERS = 7                                     # 类簇的数量
-DATA_PATH = 'Downloads/China_cities.csv'              # 数据集路径
+DATA_PATH = 'dataset/China_cities.csv'              # 数据集路径
 
 
 def city():
