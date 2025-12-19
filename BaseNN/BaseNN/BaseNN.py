@@ -908,7 +908,7 @@ class nn:
                     optimizer.zero_grad()  # 将梯度初始化为零，即清空过往梯度
                     # print(batch_x.shape,type(batch_x))
                     y_pred = self.model(batch_x)
-                    if self.task_type == 'reg' and (len(batch_y.shape) == 1 or batch_y.shape[-1] == 1):
+                    if self.task_type == 'cls' and (len(batch_y.shape) == 1 or batch_y.shape[-1] == 1):
                         from torch.nn.functional import one_hot
                         batch_y = one_hot(batch_y, self.last_channel).float()
                     # print(batch_y[0],y_pred[0])
@@ -1127,6 +1127,7 @@ class nn:
             sta = torch.load(checkpoint,map_location=torch.device('cpu'))['state_dict']
             self.model.load_state_dict(sta)
 
+        self.model.to(self.device)
         output, hidden = self.model(data, hidden)
         return output, hidden
     
@@ -1243,6 +1244,7 @@ class nn:
         # self.model = torch.load(model_path)
         self.model = torch.load(model_path,map_location=torch.device('cpu'))['state_dict']
 
+        self.model.to(self.device)
         print("载入模型{}成功！".format(model_path))
 
     def print_result(self, result=None):
