@@ -123,7 +123,7 @@ class Cluster(baseml):  # cluster
             X = self.x_train
         visualizer = InterclusterDistance(self.model)
 
-        visualizer.fit(self.x_train)        # Fit the data to the visualizer
+        visualizer.fit(X)        # Fit the data to the visualizer
         visualizer.show()        # Finalize and render the figure
 
     def plot(self, X=None):
@@ -168,7 +168,7 @@ class Cluster(baseml):  # cluster
         plt.scatter(centers[:, 0], centers[:, 1], c='black', s=20, alpha=0.5)
         # 标出聚类序号
         for i in range(self.model.cluster_centers_.shape[0]):
-            plt.text(centers[:, 0][i]+0.5, y=centers[:, 1][i]+0.5, s=i,
+            plt.text(centers[:, 0][i], y=centers[:, 1][i], s=i,
                      fontdict=dict(color='red', size=10),
                      bbox=dict(facecolor='yellow', alpha=0.2),
                      )
@@ -206,7 +206,7 @@ class Cluster(baseml):  # cluster
 
         if metrics == 'silhouette_score':
             score = silhouette_score(x, self.model.labels_)
-            print('验证轮廓系数为：{}%'.format(score * 100))
+            print('验证轮廓系数为：{}%'.format(score))
         elif metrics == 'calinski_harabasz_score':
             score = calinski_harabasz_score(x, self.model.labels_)
             

@@ -220,11 +220,8 @@ class Regression(baseml):
         # result = self.inference(self.x_test).squeeze()
         # visualizer.draw(self.y_test, result)
         y_true = y_true.squeeze()
-        visualizer.fit(X, y_true)
-
-        visualizer.score_ = visualizer.estimator.score(X, y_true)
-        result = self.inference(X).squeeze()
-        visualizer.draw(y_true, result)
+        visualizer.fit(self.x_train, self.y_train)  # 1. Fit on TRAIN
+        visualizer.score(X, y_true)  # 2. Score on TEST (X, y_true)
 
         visualizer.show()
 

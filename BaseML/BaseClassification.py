@@ -48,7 +48,7 @@ class Classification(baseml):
             if len(para) > 1:
                 self.model = SVC(**para)
             else:
-                self.model = SVC()
+                self.model = SVC(probability=True)
         elif self.algorithm == 'NaiveBayes':
             if len(para) > 1:
                 self.model = GaussianNB(**para)
@@ -135,7 +135,7 @@ class Classification(baseml):
         x_test = self.convert_np(x_test)
 
         if self.algorithm in ['AdaBoost', 'SVM', 'NaiveBayes', 'MLP', 'KNN', 'CART', 'RandomForest']:
-            pred = self.model.predict(x_test)
+            pred = self.model.predict(x_test).astype(int)
             return pred
 
     def metricplot(self, X=None, y_true=None):

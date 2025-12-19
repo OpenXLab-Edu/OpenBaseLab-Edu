@@ -309,15 +309,15 @@ class baseml:
             assert len(y) >= 2, "Error Code: -603. The validation set has less than 2 samples and r2-score cannot be calculated."
             score = r2_score(y, y_pred)
             
-            print('验证r2-score为：{}%'.format(score * 100))
+            print('验证r2-score为：{}'.format(score))
             
         elif metrics =='mse':
             score = mean_squared_error(y, y_pred)
-            print('验证均方误差为：{}%'.format(score * 100))
+            print('验证均方误差为：{}'.format(score))
 
         elif metrics =='mae':
             score = mean_absolute_error(y, y_pred)
-            print('验证平均绝对误差为：{}%'.format(score * 100))
+            print('验证平均绝对误差为：{}'.format(score))
 
         else:
             raise AssertionError("Error Code: -307. The '{}' metric is not currently supported.".format(metrics))
